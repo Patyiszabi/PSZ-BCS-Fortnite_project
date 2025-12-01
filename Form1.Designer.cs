@@ -45,6 +45,8 @@
             this.ptb_item7 = new System.Windows.Forms.PictureBox();
             this.ptb_item8 = new System.Windows.Forms.PictureBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.listbox_players = new System.Windows.Forms.ListBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.ptb_avatar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptb_weapon1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptb_weapon2)).BeginInit();
@@ -195,6 +197,22 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // listbox_players
+            // 
+            this.listbox_players.FormattingEnabled = true;
+            this.listbox_players.Location = new System.Drawing.Point(848, 105);
+            this.listbox_players.Name = "listbox_players";
+            this.listbox_players.Size = new System.Drawing.Size(376, 264);
+            this.listbox_players.TabIndex = 4;
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(703, 364);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(100, 100);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "label1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -202,6 +220,8 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(1264, 681);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.listbox_players);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.ptb_weapon5);
             this.Controls.Add(this.ptb_weapon4);
@@ -220,6 +240,7 @@
             this.Controls.Add(this.lbl_game_title);
             this.Name = "Form1";
             this.Text = "Fortnite";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.ptb_avatar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptb_weapon1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptb_weapon2)).EndInit();
@@ -257,6 +278,8 @@
         private System.Windows.Forms.PictureBox ptb_item7;
         private System.Windows.Forms.PictureBox ptb_item8;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ListBox listbox_players;
+        private System.Windows.Forms.Label label1;
     }
 }
 
