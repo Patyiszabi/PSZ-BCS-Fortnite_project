@@ -20,10 +20,12 @@ namespace PSZ_BCS_Fortnite_project
         public static string weapon_file = "fegyverek.txt";
         public static string item_file = "itemek.txt";
         public static string name_file = "nevek.txt";
+        public static string skin_directory = "\\skinek";
 
         public static List<jatekos> jatekosok = new List<jatekos>();
         public static List<string> nevek = new List<string>();
         public static List<weapons_class> fegyverek = new List<weapons_class>();
+        public static List<Image> skinek = new List<Image>();
         static jatekos player1;
         static jatekos player2;
         static jatekos player3;
@@ -143,6 +145,16 @@ namespace PSZ_BCS_Fortnite_project
                     }
                 }
             }
+            //skinek beolvasasa (file list, not preloading images into memory)
+            string skinDir = Path.Combine(Application.StartupPath, "skinek");
+            string[] skinFiles = new string[0];
+            if (Directory.Exists(skinDir))
+            {
+                var exts = new[] { ".png", ".jpg", ".jpeg", ".bmp", ".gif" };
+                skinFiles = Directory.GetFiles(skinDir)
+                                     .Where(f => exts.Contains(Path.GetExtension(f).ToLowerInvariant()))
+                                     .ToArray();
+            }
 
             // Create a single Random instance
             var rnd = new Random();
@@ -155,7 +167,7 @@ namespace PSZ_BCS_Fortnite_project
             int kills = rnd.Next(0, 100);
             int xp = kills * 150;
             int items = rnd.Next(1, 11);
-            int avatar = rnd.Next(1, 21);
+            int avatar = -1;
 
             // decide how many weapons to assign (1 to 5)
             int weaponCount = rnd.Next(1, 6);
@@ -182,6 +194,36 @@ namespace PSZ_BCS_Fortnite_project
             // instantiate player1
             player1 = new jatekos(username, level, life, shield, kills, xp, assignedWeapons, items, avatar);
 
+            // assign random avatar from skinFiles and display in ptb_avatar
+            if (skinFiles.Length > 0)
+            {
+                int skinIndex = rnd.Next(skinFiles.Length);
+                string chosenSkinFile = skinFiles[skinIndex];
+
+                // dispose previous avatar image if any
+                if (ptb_avatar.Image != null)
+                {
+                    ptb_avatar.Image.Dispose();
+                    ptb_avatar.Image = null;
+                }
+
+                try
+                {
+                    ptb_avatar.Image = Image.FromFile(chosenSkinFile);
+                    ptb_avatar.SizeMode = PictureBoxSizeMode.Zoom;
+                    player1.avatar = skinIndex; // store index; change if you prefer storing filename
+                }
+                catch
+                {
+                    // failed to load image — keep avatar empty and mark -1
+                    player1.avatar = -1;
+                }
+            }
+            else
+            {
+                player1.avatar = -1;
+            }
+
             // (Optional) add player1 to the general list
             jatekosok.Add(player1);
 
@@ -207,7 +249,7 @@ namespace PSZ_BCS_Fortnite_project
                 { "Drum Gun", "drum.jpg" },
                 { "Tactical Shotgun", "tact.jpg" },
                 { "Tactical Submachine Gun", "smg.jpg" },
-                { "Heisted Run 'N' Gun", "p90.jpg" },
+                { "Heisted Run 'N' Gun SMG", "p90.jpg" },
                 { "Shadow Tracker", "usp.jpg" },
                 { "Hunting Rifle", "kacsavadasz.jpg" }
             };
@@ -266,6 +308,7 @@ namespace PSZ_BCS_Fortnite_project
                     pb.Image = null;
                 }
             }
+
         }
     }
 }
