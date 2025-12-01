@@ -45,7 +45,6 @@ namespace PSZ_BCS_Fortnite_project
             public int shield;
             public int kills;
             public int xp;
-            // changed to hold actual weapon objects assigned to the player
             public List<weapons_class> weapons;
             public int items;
             public int avatar;
@@ -138,14 +137,14 @@ namespace PSZ_BCS_Fortnite_project
                         }
                         else
                         {
-                            // if only name provided, use default numeric values
+                          
                             string wname = parts[0].Trim();
                             fegyverek.Add(new weapons_class(wname, 1, 0));
                         }
                     }
                 }
             }
-            //skinek beolvasasa (file list, not preloading images into memory)
+            //skinek beolvasasa
             string skinDir = Path.Combine(Application.StartupPath, "skinek");
             string[] skinFiles = new string[0];
             if (Directory.Exists(skinDir))
@@ -156,27 +155,24 @@ namespace PSZ_BCS_Fortnite_project
                                      .ToArray();
             }
 
-            // Create a single Random instance
+            
             var rnd = new Random();
 
-            // Build player1 with random stats and 1..5 weapons chosen from fegyverek
+         
             string username = nevek.Count > 0 ? nevek[rnd.Next(nevek.Count)] : "Player";
             int level = rnd.Next(1, 201);
             int life = rnd.Next(0, 101);
             int shield = rnd.Next(0, 101);
             int kills = rnd.Next(0, 100);
-            int xp = kills * 150;
+            int xp = kills * 80000;
             int items = rnd.Next(1, 11);
             int avatar = -1;
 
-            // decide how many weapons to assign (1 to 5)
             int weaponCount = rnd.Next(1, 6);
 
-            // select up to weaponCount distinct weapons from fegyverek
             var assignedWeapons = new List<weapons_class>();
             if (fegyverek.Count > 0)
             {
-                // if fewer weapons available than requested, take all
                 weaponCount = Math.Min(weaponCount, fegyverek.Count);
 
                 // choose distinct random indices
@@ -191,16 +187,13 @@ namespace PSZ_BCS_Fortnite_project
                 }
             }
 
-            // instantiate player1
             player1 = new jatekos(username, level, life, shield, kills, xp, assignedWeapons, items, avatar);
 
-            // assign random avatar from skinFiles and display in ptb_avatar
             if (skinFiles.Length > 0)
             {
                 int skinIndex = rnd.Next(skinFiles.Length);
                 string chosenSkinFile = skinFiles[skinIndex];
 
-                // dispose previous avatar image if any
                 if (ptb_avatar.Image != null)
                 {
                     ptb_avatar.Image.Dispose();
@@ -211,11 +204,11 @@ namespace PSZ_BCS_Fortnite_project
                 {
                     ptb_avatar.Image = Image.FromFile(chosenSkinFile);
                     ptb_avatar.SizeMode = PictureBoxSizeMode.Zoom;
-                    player1.avatar = skinIndex; // store index; change if you prefer storing filename
+                    player1.avatar = skinIndex; 
                 }
                 catch
                 {
-                    // failed to load image — keep avatar empty and mark -1
+
                     player1.avatar = -1;
                 }
             }
@@ -224,10 +217,8 @@ namespace PSZ_BCS_Fortnite_project
                 player1.avatar = -1;
             }
 
-            // (Optional) add player1 to the general list
             jatekosok.Add(player1);
 
-            // show player1 weapon names in label1 (comma separated)
             if (player1.weapons != null && player1.weapons.Count > 0)
             {
                 label1.Text = string.Join(", ", player1.weapons.Select(w => w.weapon_name));
@@ -237,7 +228,6 @@ namespace PSZ_BCS_Fortnite_project
                 label1.Text = "Nincs fegyver";
             }
 
-            // Map weapon names to image file names
             var weaponImageMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
                 { "Hand Cannon", "Deagle.jpg" },
@@ -254,22 +244,19 @@ namespace PSZ_BCS_Fortnite_project
                 { "Hunting Rifle", "kacsavadasz.jpg" }
             };
 
-            // prepare picturebox array in the display order
             var weaponBoxes = new PictureBox[] { ptb_weapon1, ptb_weapon2, ptb_weapon3, ptb_weapon4, ptb_weapon5 };
 
-            // Clear existing images safely and assign weapons to pictureboxes one-to-one.
             for (int i = 0; i < weaponBoxes.Length; i++)
             {
                 var pb = weaponBoxes[i];
 
-                // dispose previous image if any
+
                 if (pb.Image != null)
                 {
                     pb.Image.Dispose();
                     pb.Image = null;
                 }
 
-                // if there is a corresponding weapon, set its image
                 if (i < player1.weapons.Count)
                 {
                     var weapon = player1.weapons[i];
@@ -278,7 +265,7 @@ namespace PSZ_BCS_Fortnite_project
                     {
                         if (File.Exists(imgFile))
                         {
-                            // load image from file
+
                             try
                             {
                                 pb.Image = Image.FromFile(imgFile);
@@ -286,25 +273,21 @@ namespace PSZ_BCS_Fortnite_project
                             }
                             catch
                             {
-                                // If loading fails, leave picturebox empty
                                 pb.Image = null;
                             }
                         }
                         else
                         {
-                            // image file not found - leave empty (or set default)
                             pb.Image = null;
                         }
                     }
                     else
                     {
-                        // no mapping for weapon name - leave empty (or set default)
                         pb.Image = null;
                     }
                 }
                 else
                 {
-                    // no weapon for this slot -> leave empty
                     pb.Image = null;
                 }
             }
