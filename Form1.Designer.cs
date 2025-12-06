@@ -68,11 +68,12 @@
             this.lbl_game_title.AutoSize = true;
             this.lbl_game_title.Cursor = System.Windows.Forms.Cursors.Default;
             this.lbl_game_title.Font = new System.Drawing.Font("Microsoft Sans Serif", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lbl_game_title.Location = new System.Drawing.Point(955, 9);
+            this.lbl_game_title.Location = new System.Drawing.Point(44, 9);
             this.lbl_game_title.Name = "lbl_game_title";
             this.lbl_game_title.Size = new System.Drawing.Size(132, 39);
             this.lbl_game_title.TabIndex = 0;
             this.lbl_game_title.Text = "Fortnite";
+            this.lbl_game_title.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // ptb_avatar
             // 
@@ -188,7 +189,7 @@
             // 
             // button1
             // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.button1.Location = new System.Drawing.Point(1069, 591);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(183, 78);
@@ -199,17 +200,20 @@
             // 
             // listbox_players
             // 
+            this.listbox_players.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.listbox_players.FormattingEnabled = true;
-            this.listbox_players.Location = new System.Drawing.Point(848, 105);
+            this.listbox_players.ItemHeight = 31;
+            this.listbox_players.Location = new System.Drawing.Point(952, 81);
             this.listbox_players.Name = "listbox_players";
-            this.listbox_players.Size = new System.Drawing.Size(376, 264);
+            this.listbox_players.Size = new System.Drawing.Size(300, 252);
             this.listbox_players.TabIndex = 4;
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(703, 364);
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label1.Location = new System.Drawing.Point(702, 367);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 100);
+            this.label1.Size = new System.Drawing.Size(163, 120);
             this.label1.TabIndex = 5;
             this.label1.Text = "label1";
             // 
