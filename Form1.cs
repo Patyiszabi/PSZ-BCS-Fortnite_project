@@ -57,11 +57,7 @@ namespace PSZ_BCS_Fortnite_project
             { "Rift-To-Go", "rift.jpg" },
             { "Shadow Bomb", "shadow.jpg" },
             { "Shockwave Grenade", "shock.jpg" },
-            { "Storm Flip", "storm.jpg" },
-            { "Sneaky Snowman", "snowman.jpg" },
-            { "Presents", "presents.jpg" },
-            { "Chiller Grenade", "chillergrenade.jpg" },
-            { "Fishing Rod", "fishingrod.jpg" }
+            { "Storm Flip", "storm.jpg" }
 
         };
 
