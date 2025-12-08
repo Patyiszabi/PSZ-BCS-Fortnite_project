@@ -378,5 +378,17 @@ namespace PSZ_BCS_Fortnite_project
             MessageBox.Show("Köszönjük, hogy játékunkat használta.");
             Application.Exit();
         }
+
+        private void lbl_game_title_MouseHover(object sender, EventArgs e)
+        {
+            lbl_game_title.Text = "Kattints ide a ranglistához!";
+            lbl_game_title.ForeColor = Color.Red;
+        }
+
+        private void lbl_game_title_MouseLeave(object sender, EventArgs e)
+        {
+            lbl_game_title.Text = "Fortnite";
+            lbl_game_title.ForeColor = Color.Black;
+        }
     }
 }
