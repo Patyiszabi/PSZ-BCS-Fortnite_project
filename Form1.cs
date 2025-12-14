@@ -130,7 +130,7 @@ namespace PSZ_BCS_Fortnite_project
 
             // skinek
             string skinDir = Path.Combine(Application.StartupPath, skinFolder);
-            string[] skins = Directory.Exists(skinDir) ? Directory.GetFiles(skinDir).Where(IsImage).ToArray() : new string[0];
+            string[] skins = LoadSkins(skinDir);
 
             GeneratePlayers(8, skins);
 
@@ -139,6 +139,23 @@ namespace PSZ_BCS_Fortnite_project
 
             label1.Text = $"Elérhető nevek:{namePool.Count}\nElérhető fegyverek: {weaponPool.Count}\nElérhető itemek: {itemPool.Count}";
         }
+        private string[] LoadSkins(string folderPath)
+        {
+            if (!Directory.Exists(folderPath))
+                return new string[0];
+
+            string[] allFiles = Directory.GetFiles(folderPath);
+            List<string> imageFiles = new List<string>();
+
+            foreach (string file in allFiles)
+            {
+                if (IsImage(file))
+                    imageFiles.Add(file);
+            }
+
+            return imageFiles.ToArray();
+        }
+
 
         #region Fájlok
         private void LoadNames()
@@ -146,10 +163,22 @@ namespace PSZ_BCS_Fortnite_project
             namePool.Clear();
             string p = Path.Combine(Application.StartupPath, nameFile);
             if (!File.Exists(p)) return;
-            foreach (var line in File.ReadAllLines(p))
+            string[] lines = File.ReadAllLines(p);
+
+            foreach (string line in lines)
             {
-                if (string.IsNullOrWhiteSpace(line)) continue;
-                foreach (var part in line.Split(',')) { var n = part.Trim(); if (!string.IsNullOrEmpty(n)) namePool.Add(n); }
+                if (line.Trim() == "")
+                    continue;
+
+                string[] names = line.Split(',');
+
+                foreach (string name in names)
+                {
+                    string cleanName = name.Trim();
+
+                    if (cleanName != "")
+                        namePool.Add(cleanName);
+                }
             }
         }
 
@@ -158,14 +187,27 @@ namespace PSZ_BCS_Fortnite_project
             weaponPool.Clear();
             string p = Path.Combine(Application.StartupPath, weaponFile);
             if (!File.Exists(p)) return;
-            foreach (var line in File.ReadAllLines(p))
+            string[] lines = File.ReadAllLines(p);
+
+            foreach (string line in lines)
             {
-                if (string.IsNullOrWhiteSpace(line)) continue;
-                var parts = line.Split(',');
+                if (line.Trim() == "")
+                    continue;
+
+                string[] parts = line.Split(',');
+
                 string name = parts[0].Trim();
-                string rarity = parts.Length > 1 ? parts[1].Trim() : "Common";
-                int maxMag = parts.Length > 2 ? int.TryParse(parts[2].Trim(), out int m) ? m : 0 : 0;
-                weaponPool.Add(new WeaponDef(name, rarity, maxMag));
+                string rarity = "Common";
+                int maxMag = 0;
+
+                if (parts.Length > 1)
+                    rarity = parts[1].Trim();
+
+                if (parts.Length > 2)
+                    int.TryParse(parts[2].Trim(), out maxMag);
+
+                WeaponDef weapon = new WeaponDef(name, rarity, maxMag);
+                weaponPool.Add(weapon);
             }
         }
 
@@ -174,10 +216,22 @@ namespace PSZ_BCS_Fortnite_project
             itemPool.Clear();
             string p = Path.Combine(Application.StartupPath, itemFile);
             if (!File.Exists(p)) return;
-            foreach (var line in File.ReadAllLines(p))
+            string[] lines = File.ReadAllLines(p);
+
+            foreach (string line in lines)
             {
-                if (string.IsNullOrWhiteSpace(line)) continue;
-                foreach (var part in line.Split(',')) { var n = part.Trim(); if (!string.IsNullOrEmpty(n)) itemPool.Add(n); }
+                if (line.Trim() == "")
+                    continue;
+
+                string[] items = line.Split(',');
+
+                foreach (string item in items)
+                {
+                    string cleanItem = item.Trim();
+
+                    if (cleanItem != "")
+                        itemPool.Add(cleanItem);
+                }
             }
         }
         #endregion
@@ -187,7 +241,7 @@ namespace PSZ_BCS_Fortnite_project
         {
             players.Clear();
 
-            // Elérhető nevek listája
+            // Elérhető nevek listája, ha elfogynának az eredetiek
             var availableNames = new List<string>(namePool);
             if (availableNames.Count == 0)
             {
@@ -223,7 +277,12 @@ namespace PSZ_BCS_Fortnite_project
                 foreach (var idx in weaponIndices)
                 {
                     var w = weaponPool[idx];
-                    int ammo = w.MaxMag > 0 ? rnd.Next(1, w.MaxMag + 1) : 0;
+                    int ammo = w.MaxMag;
+                    if (w.MaxMag > 0)
+                    {
+                        ammo = rnd.Next(1, w.MaxMag + 1);
+                    }
+                    else ammo = 0;
                     p.Weapons.Add(new PlayerWeapon(w, ammo));
                 }
 
@@ -235,7 +294,7 @@ namespace PSZ_BCS_Fortnite_project
                 foreach (var idx in itemIndices)
                 {
                     string itemName = itemPool[idx];
-                    int qty = rnd.Next(1, 6); // 1..5 darab
+                    int qty = rnd.Next(1, 6);
                     p.Items.Add(new PlayerItem(itemName, qty));
                 }
 
@@ -272,11 +331,22 @@ namespace PSZ_BCS_Fortnite_project
                 if (i < p.Weapons.Count)
                 {
                     var pw = p.Weapons[i];
-                    string img = WeaponImages.ContainsKey(pw.Def.Name) ? Path.Combine(Application.StartupPath, weaponsImgFolder, WeaponImages[pw.Def.Name]) : null;
+                    string img = null;
+
+                    if (WeaponImages.ContainsKey(pw.Def.Name))
+                    {
+                        string fileName = WeaponImages[pw.Def.Name];
+                        img = Path.Combine(Application.StartupPath, weaponsImgFolder, fileName);
+                    }
+
                     SetPicture(pb, img);
                     pb.Tag = pw;
                 }
-                else { SetPicture(pb, null); pb.Tag = null; }
+                else
+                {
+                    SetPicture(pb, null);
+                    pb.Tag = null;
+                }
             }
 
             // itemek
@@ -287,11 +357,21 @@ namespace PSZ_BCS_Fortnite_project
                 if (i < p.Items.Count)
                 {
                     var pi = p.Items[i];
-                    string img = ItemImages.ContainsKey(pi.Name) ? Path.Combine(Application.StartupPath, itemsImgFolder, ItemImages[pi.Name]) : null;
+                    string img = null;
+
+                    if (ItemImages.ContainsKey(pi.Name))
+                    {
+                        string fileName = ItemImages[pi.Name];
+                        img = Path.Combine(Application.StartupPath, itemsImgFolder, fileName);
+                    }
                     SetPicture(pb, img);
                     pb.Tag = pi;
                 }
-                else { SetPicture(pb, null); pb.Tag = null; }
+                else
+                {
+                    SetPicture(pb, null);
+                    pb.Tag = null;
+                }
             }
 
             label1.Text = $"Név: {p.Name}\nSzint: {p.Level}\nÉleterő: {p.Life}\nPajzs: {p.Shield}\nKills: {p.Kills}\nXP: {p.XP}";
@@ -324,9 +404,9 @@ namespace PSZ_BCS_Fortnite_project
         #region Ranglista
         private void Lbl_game_title_Click(object sender, EventArgs e)
         {
-            string input = Interaction.InputBox("Add meg a ranglista szűrési kulcsát (életerő / kills / xp):", "Ranglista szűrés", "xp");
+            string input = Interaction.InputBox("Adja meg a ranglista szűrési kulcsát (életerő / kills / xp):", "Ranglista szűrés", "xp");
             if (string.IsNullOrWhiteSpace(input)) return;
-            string key = input.Trim().ToLowerInvariant();
+            string key = input.Trim().ToLower();
 
             IEnumerable<Player> ordered;
             if (key == "életerő")
@@ -345,7 +425,11 @@ namespace PSZ_BCS_Fortnite_project
             {
                 ordered = null;
             }
-            if (ordered == null) { MessageBox.Show("Érvénytelen kulcs."); return; }
+            if (ordered == null)
+            {
+                MessageBox.Show("Érvénytelen kulcs.");
+                return;
+            }
 
             var sb = new System.Text.StringBuilder();
             int pos = 1;
@@ -361,7 +445,11 @@ namespace PSZ_BCS_Fortnite_project
         #region Utils
         private void SetPicture(PictureBox pb, string path)
         {
-            if (pb.Image != null) { pb.Image.Dispose(); pb.Image = null; }
+            if (pb.Image != null)
+            { 
+                pb.Image.Dispose();
+                pb.Image = null;
+            }
             if (!string.IsNullOrEmpty(path) && File.Exists(path))
             {
                 pb.Image = Image.FromFile(path);
@@ -369,19 +457,26 @@ namespace PSZ_BCS_Fortnite_project
             }
         }
 
-        private static bool IsImage(string file) => new[] { ".png", ".jpg", ".jpeg", ".bmp", ".gif" }.Contains(Path.GetExtension(file).ToLower());
+        private static bool IsImage(string file)
+        {
+           string ext = Path.GetExtension(file).ToLower();
+           if (ext == ".jpg") return true;
+           if (ext == ".png") return true;
+           return false;
+
+        }
 
         #endregion
 
         private void button1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Köszönjük, hogy játékunkat használta.");
+            MessageBox.Show("Köszönjük, hogy játékunkat használta!");
             Application.Exit();
         }
 
         private void lbl_game_title_MouseHover(object sender, EventArgs e)
         {
-            lbl_game_title.Text = "Kattints ide a ranglistához!";
+            lbl_game_title.Text = "Kattintson ide a ranglistához!";
             lbl_game_title.ForeColor = Color.Red;
         }
 
